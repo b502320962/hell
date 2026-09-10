@@ -1,0 +1,91 @@
+@use '@/styles/variables.scss' as *;
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16rpx 24rpx;
+  background: rgba(13, 13, 16, 0.95);
+  border-bottom: 1rpx solid $color-border;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.label {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  letter-spacing: 2rpx;
+}
+
+.value {
+  font-size: $font-size-md;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.pips {
+  display: flex;
+  gap: 8rpx;
+}
+
+.pip {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: $radius-round;
+}
+
+.pipAlive {
+  background: $color-cinnabar;
+  box-shadow: 0 0 8rpx rgba(176, 58, 46, 0.7);
+}
+
+.pipDead {
+  background: transparent;
+  border: 1rpx solid $color-text-disabled;
+}
+
+.bookButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8rpx 24rpx;
+  border: 1rpx solid $color-primary;
+  border-radius: $radius-button;
+  background: rgba(201, 162, 39, 0.08);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.bookText {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  letter-spacing: 2rpx;
+}
+
+.badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  border-radius: $radius-round;
+  background: $color-cinnabar;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badgeText {
+  font-size: 20rpx;
+  color: $color-text-white;
+  line-height: 1;
+}

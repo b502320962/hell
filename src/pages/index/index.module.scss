@@ -1,0 +1,120 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 120rpx $page-padding 80rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(176, 58, 46, 0.16) 0%, transparent 55%),
+    linear-gradient(180deg, #141016 0%, $color-bg-page 60%);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ghostSeal {
+  font-size: 200rpx;
+  line-height: 1;
+  color: rgba(176, 58, 46, 0.18);
+  font-weight: $font-weight-bold;
+  margin-bottom: 32rpx;
+}
+
+.title {
+  font-size: 64rpx;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  letter-spacing: 16rpx;
+  text-shadow: 0 0 24rpx rgba(201, 162, 39, 0.35);
+  text-align: center;
+}
+
+.subtitle {
+  margin-top: $spacing-md;
+  font-size: $font-size-lg;
+  color: $color-cinnabar;
+  letter-spacing: 8rpx;
+  text-align: center;
+}
+
+.ruleCard {
+  margin-top: $spacing-xl;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 28rpx 32rpx;
+  border: 1rpx dashed $color-cinnabar;
+  border-radius: $radius-lg;
+  background: rgba(176, 58, 46, 0.06);
+}
+
+.ruleText {
+  display: block;
+  font-size: $font-size-sm;
+  line-height: $line-height-loose;
+  color: $color-text-secondary;
+  text-align: center;
+  letter-spacing: 2rpx;
+}
+
+.bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.btnPrimary {
+  min-height: $button-height-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-cinnabar 0%, #7e2a22 100%);
+  box-shadow: 0 4rpx 20rpx rgba(176, 58, 46, 0.35);
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.btnGhost {
+  min-height: $button-height-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-button;
+  border: 1rpx solid $color-primary;
+  background: rgba(201, 162, 39, 0.06);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.btnPrimaryText {
+  font-size: $font-size-lg;
+  color: $color-text-white;
+  letter-spacing: 8rpx;
+  font-weight: $font-weight-semibold;
+}
+
+.btnGhostText {
+  font-size: $font-size-md;
+  color: $color-primary;
+  letter-spacing: 6rpx;
+}
+
+.progressHint {
+  margin-top: $spacing-sm;
+  text-align: center;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}

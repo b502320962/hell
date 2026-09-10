@@ -1,0 +1,79 @@
+@use '@/styles/variables.scss' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  animation: fadeIn $transition-slow;
+}
+
+.speakerTag {
+  align-self: flex-start;
+  margin-bottom: $spacing-sm;
+  padding: 4rpx 20rpx;
+  border: 1rpx solid $color-primary;
+  border-radius: $radius-xs;
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.speakerText {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  letter-spacing: 2rpx;
+}
+
+.bubble {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32rpx;
+  border-radius: 28rpx; // ≈14px
+  background: rgba(18, 18, 22, 0.92);
+  border: 1rpx solid $color-border;
+  box-shadow: $shadow-popup;
+}
+
+.narrative {
+  background: rgba(13, 13, 16, 0.75);
+  border-style: dashed;
+}
+
+.text {
+  display: block;
+  text-align: left;
+  font-size: 30rpx;
+  line-height: $line-height-loose;
+  color: $color-text-primary;
+  letter-spacing: 1rpx;
+}
+
+.continueHint {
+  margin-top: $spacing-md;
+  text-align: right;
+}
+
+.continueText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}

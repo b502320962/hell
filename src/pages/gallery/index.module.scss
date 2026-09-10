@@ -1,0 +1,148 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $spacing-lg $page-padding $spacing-xl;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #12101a 0%, $color-bg-page 45%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.headerTitle {
+  font-size: $font-size-xxl;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 10rpx;
+}
+
+.headerDesc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  letter-spacing: 2rpx;
+}
+
+.group {
+  margin-bottom: $spacing-xl;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  padding-left: 8rpx;
+  border-left: 6rpx solid $color-cinnabar;
+}
+
+.groupName {
+  font-size: $font-size-lg;
+  color: $color-text-primary;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 4rpx;
+}
+
+.groupDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.levelGrid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.levelCard {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 112rpx;
+  padding: 20rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: $radius-lg;
+  border: 1rpx solid $color-border;
+  background: rgba(18, 18, 22, 0.92);
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.levelOpen {
+  border-color: rgba(201, 162, 39, 0.45);
+}
+
+.levelDone {
+  border-color: rgba(176, 58, 46, 0.55);
+  background: rgba(176, 58, 46, 0.07);
+}
+
+.levelLocked {
+  opacity: 0.55;
+  background: rgba(13, 13, 16, 0.7);
+}
+
+.levelLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.levelIndex {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: $radius-round;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid $color-border;
+  flex-shrink: 0;
+}
+
+.levelIndexText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.levelIndexOpen {
+  border-color: $color-primary;
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.levelIndexOpen .levelIndexText {
+  color: $color-primary;
+}
+
+.levelName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  letter-spacing: 2rpx;
+}
+
+.levelNameLocked {
+  color: $color-text-tertiary;
+}
+
+.levelStatus {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  letter-spacing: 2rpx;
+}
+
+.statusDone {
+  color: $color-cinnabar;
+}
+
+.fogMark {
+  font-size: $font-size-lg;
+  color: $color-text-disabled;
+  letter-spacing: 4rpx;
+}
