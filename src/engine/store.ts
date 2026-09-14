@@ -262,11 +262,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
       ? state.completed
       : [...state.completed, level.id];
 
-    const verdict: VerdictResult = {
+    // 判词归一（设计规则：无债舌全→真言之魂；无债舌伤→带伤过关）
+    // 真言结局但本层舌已伤 → 按带伤结算，避免"真言之魂"配"余2条舌"的矛盾
+    const verdict: EndingNode['verdict'] =
+      ending.verdict === 'truth' && state.tongue < MAX_TONGUE ? 'wounded' : ending.verdict;
+
+    const result: VerdictResult = {
       levelId: level.id,
       title: ending.title,
       text: ending.text,
-      verdict: ending.verdict,
+      verdict,
       baseReward: level.baseReward,
       tongueBonus,
       totalReward,
@@ -276,7 +281,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       incense: state.incense + totalReward,
       completed,
-      lastVerdict: verdict
+      lastVerdict: result
     });
     persistSlice({ ...get() } as GameStore);
     console.info('[Engine] 关卡完成', level.id, '奖励香火', totalReward);

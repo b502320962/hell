@@ -26,7 +26,7 @@ export const LEVEL_GROUPS: LevelGroup[] = [
 ];
 
 export const LEVEL_META: LevelMeta[] = LEVEL_GROUPS.flatMap((group) =>
-  group.levels.map((title, i) => ({
+  group.levels.map((title) => ({
     id: '',
     index: 0,
     title,
