@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDidShow, useDidHide } from '@tarojs/taro';
 import { useGameStore } from './engine/store';
 // 全局样式

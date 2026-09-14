@@ -224,11 +224,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       patch.levelFlags = { ...state.levelFlags, [option.setFlag]: true };
     }
     // 说谎即留痕：跨层标记 global_told_lie（隐藏结局「无谎之人」判定用）
-    if (option.setGlobalFlag || lie) {
+    // 义谎虽不扣舌，仍是谎——同样留痕
+    if (option.setGlobalFlag || lie || righteous) {
       patch.globalFlags = {
         ...state.globalFlags,
         ...(option.setGlobalFlag ? { [option.setGlobalFlag]: true } : null),
-        ...(lie ? { global_told_lie: true } : null)
+        ...(lie || righteous ? { global_told_lie: true } : null)
       };
     }
     if (option.next) patch.nodeId = option.next;

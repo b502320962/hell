@@ -19,7 +19,7 @@ const GalleryPage: React.FC = () => {
 
   const cellsByGroup = LEVEL_GROUPS.map((group) => {
     const metas = LEVEL_META.filter((meta) => meta.group === group.name);
-    const cells: GalleryCell[] = group.levels.map((title, i) => {
+    const cells: GalleryCell[] = group.levels.map((_title, i) => {
       const meta = metas[i];
       const done = completed.includes(meta.id);
       const unlocked = isLevelUnlocked(meta.id, completed);
