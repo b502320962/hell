@@ -175,6 +175,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     };
     // 已知真相而否认（lieCond 满足）才算说谎；静态 isLie 直接算谎
     const lie = !!option.isLie || evalCond(option.lieCond, ctx);
+    // 义谎：仍是谎，但不扣舌（救无辜者而撒）
+    const righteous = !!option.righteousLie;
     const tongueBefore = state.tongue;
 
     // 香火买路钱不足：防御性拦截（UI 已置灰，双保险）
@@ -183,7 +185,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return { lie: false, tongueBefore, tongueAfter: tongueBefore, unaffordable: true };
     }
 
-    const tongueAfter = lie
+    // 普通谎扣舌；义谎不扣舌
+    const tongueAfter = lie && !righteous
       ? Math.max(0, tongueBefore - (option.tonguePenalty ?? 1))
       : tongueBefore;
 
@@ -197,7 +200,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (typeof option.requireIncense === 'number') {
       patch.incense = Math.max(0, state.incense - option.requireIncense);
     }
-    if (option.addDebt) {
+    // 义谎同样累债（冤债），后续可凭 flag 减免
+    if (option.addDebt || righteous) {
       patch.debt = state.debt + 1;
     }
     if (option.setFlag) {
@@ -210,6 +214,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     console.info('[Engine] 选项结算', {
       lie,
+      righteous,
       tongueBefore,
       tongueAfter,
       debt: patch.debt ?? state.debt

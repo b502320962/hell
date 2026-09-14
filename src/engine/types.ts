@@ -44,6 +44,11 @@ export interface ChoiceOption {
   tonguePenalty?: number;
   /** 积累一条谎言债务 */
   addDebt?: boolean;
+  /**
+   * 义谎：此选项虽是说谎，但是为救无辜者而撒
+   * 不扣舌，但仍累一条债（冤债）；后续结算可凭 flag 减免
+   */
+  righteousLie?: boolean;
   /** 香火变化（奖励为正、惩罚为负） */
   incense?: number;
   /** 选择此项需要消耗的香火；不足时选项置灰不可选（真话买路钱） */
