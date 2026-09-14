@@ -77,13 +77,15 @@ export interface ClueNode {
   next?: string;
 }
 
-/** 矛盾指认：从多条陈述中点出谎话 */
+/** 矛盾指认：从多条陈述中点出谎话（支持单谎或双谎指认） */
 export interface ContradictionPuzzle {
   kind: 'contradiction';
   prompt: string;
   statements: { id: string; speaker: string; text: string }[];
-  /** 谎话陈述 id */
-  answerStatementId: string;
+  /** 单谎答案：谎话陈述 id（与 answerStatementIds 二选一） */
+  answerStatementId?: string;
+  /** 双谎指认：多句谎话需全部点出，点错任一句即失败 */
+  answerStatementIds?: string[];
   /** 因果簿中用于戳穿的线索 id（用于提示文案） */
   refClueId?: string;
   hint?: string;

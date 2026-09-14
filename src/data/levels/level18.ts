@@ -2,7 +2,8 @@
 // 第 18 层 · 刀锯狱（审之狱 终层 · 十八层地狱 最后一层）
 // 机制综合：真话独木桥（终审自陈）+ 审判抉择（判自己）+ 总债清算
 // 终极铁律：玩家自进地狱以来所累之债（义债 / 血债 / 恶债 / 灼舌债）至此清算
-// 四结局：真言之魂 / 义债清偿 / 带伤而归 / 沉沦债务
+// 隐藏终章：全程零谎（global_told_lie 未置）+ 零债 + 舌齿完好 → 「无谎之人」
+// 五结局：无谎之人（隐藏）/ 真言之魂 / 带伤而归 / 沉沦债务
 // ============================================
 
 import type { Level } from '../../engine/types';
@@ -225,8 +226,29 @@ export const level18: Level = {
       type: 'branch',
       id: 'branch_tongue_final',
       cond: { op: 'eq', key: 'tongue', value: 3 },
-      then: 'end_truth_soul',
+      then: 'branch_hidden',
       else: 'end_wounded'
+    },
+    {
+      type: 'branch',
+      id: 'branch_hidden',
+      // 隐藏终章：全程未说过一句谎（含义谎）、未背分文债——真正的「无谎之人」
+      cond: {
+        op: 'and',
+        items: [
+          { op: 'not', items: [{ op: 'flag', key: 'global_told_lie' }] },
+          { op: 'eq', key: 'debt', value: 0 }
+        ]
+      },
+      then: 'end_hidden',
+      else: 'end_truth_soul'
+    },
+    {
+      type: 'ending',
+      id: 'end_hidden',
+      title: '终章 · 无谎之人',
+      text: '刀落下来，却停在你发顶三寸——锯齿一寸寸倒卷，锈成齑粉。铜镜里的债影本就无踪，此刻连镜都透了：镜里镜外，再无一人替你背账。判官的声音最后一次响起，轻得像叹息：「十八层地狱，头一回有人一句谎都没说过。连为救人都不肯——你不是守规矩，你是把『真』活成了骨头。回去吧。这里禁止说谎，而你，从不需要。」门开处白光大盛。',
+      verdict: 'truth'
     },
     {
       type: 'ending',

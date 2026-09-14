@@ -1,7 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
-import { useGameStore, MAX_TONGUE, HINT_COST } from '@/engine/store';
+import {
+  useGameStore,
+  MAX_TONGUE,
+  hintCostFor,
+  wrongPenalty
+} from '@/engine/store';
 import { getLevel } from '@/data/levels';
 import { evalCond } from '@/engine/conditions';
 import type {
@@ -28,6 +33,7 @@ const GamePage: React.FC = () => {
   const levelFlags = useGameStore((s) => s.levelFlags);
   const globalFlags = useGameStore((s) => s.globalFlags);
   const wrongAttempts = useGameStore((s) => s.wrongAttempts);
+  const hintCount = useGameStore((s) => s.hintCount);
   const levelFailed = useGameStore((s) => s.levelFailed);
 
   const startLevel = useGameStore((s) => s.startLevel);
@@ -103,7 +109,12 @@ const GamePage: React.FC = () => {
   const handlePuzzleSubmit = (puzzleNode: PuzzleNode, success: boolean) => {
     if (!success) {
       Taro.vibrateShort({ type: 'medium' }).catch(() => {});
-      Taro.showToast({ title: '妄言！拔舌一条', icon: 'none', duration: 1400 });
+      const penalty = wrongPenalty((wrongAttempts[puzzleNode.id] ?? 0) + 1);
+      Taro.showToast({
+        title: penalty > 1 ? `妄言！连错拔舌${penalty}条` : '妄言！拔舌一条',
+        icon: 'none',
+        duration: 1400
+      });
     }
     puzzleOutcome(puzzleNode.id, success, puzzleNode.successNext, puzzleNode.failNext);
   };
@@ -186,12 +197,13 @@ const GamePage: React.FC = () => {
 
         {node.type === 'puzzle' ? (
           <PuzzleHost
+            key={node.id}
             puzzle={node.puzzle}
             puzzleId={node.id}
             wrongCount={wrongAttempts[node.id] ?? 0}
             clues={clues}
-            hintCost={HINT_COST}
-            canAffordHint={incense >= HINT_COST}
+            hintCost={hintCostFor(hintCount)}
+            canAffordHint={incense >= hintCostFor(hintCount)}
             onHint={spendHint}
             onSubmit={(success) => handlePuzzleSubmit(node, success)}
           />

@@ -11,7 +11,18 @@ import { clearPersist, defaultPersist, loadPersist, savePersist } from './save';
 import { getLevel } from '../data/levels';
 
 export const MAX_TONGUE = 3;
-const HINT_COST = 3;
+/** 提示费用阶梯：层内第 1/2/3 次及以后的焚香费用 */
+export const HINT_COSTS = [3, 5, 8];
+/** 连错递增：同一谜题第 1 次答错扣 1 条舌，第 2 次起扣 2 条（防穷举） */
+export const WRONG_PENALTY_CAP = 2;
+
+export function hintCostFor(hintCount: number): number {
+  return HINT_COSTS[Math.min(hintCount, HINT_COSTS.length - 1)];
+}
+
+export function wrongPenalty(attempt: number): number {
+  return Math.min(attempt, WRONG_PENALTY_CAP);
+}
 
 export interface VerdictResult {
   levelId: string;
@@ -39,6 +50,8 @@ interface GameStore {
   levelId: string | null;
   nodeId: string | null;
   wrongAttempts: Record<string, number>;
+  /** 层内已购提示次数（决定下一次提示价格） */
+  hintCount: number;
   levelFailed: boolean;
   lastVerdict: VerdictResult | null;
 
@@ -86,6 +99,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   levelId: null,
   nodeId: null,
   wrongAttempts: {},
+  hintCount: 0,
   levelFailed: false,
   lastVerdict: null,
 
@@ -125,6 +139,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       clues: [],
       levelFlags: {},
       wrongAttempts: {},
+      hintCount: 0,
       levelFailed: false,
       lastVerdict: null
     });
@@ -143,6 +158,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       clues: [],
       levelFlags: {},
       wrongAttempts: {},
+      hintCount: 0,
       levelFailed: false
     });
   },
@@ -207,8 +223,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (option.setFlag) {
       patch.levelFlags = { ...state.levelFlags, [option.setFlag]: true };
     }
-    if (option.setGlobalFlag) {
-      patch.globalFlags = { ...state.globalFlags, [option.setGlobalFlag]: true };
+    // 说谎即留痕：跨层标记 global_told_lie（隐藏结局「无谎之人」判定用）
+    if (option.setGlobalFlag || lie) {
+      patch.globalFlags = {
+        ...state.globalFlags,
+        ...(option.setGlobalFlag ? { [option.setGlobalFlag]: true } : null),
+        ...(lie ? { global_told_lie: true } : null)
+      };
     }
     if (option.next) patch.nodeId = option.next;
 
@@ -232,8 +253,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return;
     }
     const attempts = (state.wrongAttempts[puzzleId] ?? 0) + 1;
-    const tongueAfter = Math.max(0, state.tongue - 1);
-    console.warn('[Engine] 对质失败（妄言）', puzzleId, '第', attempts, '次');
+    // 连错递增：第 1 次扣 1 条舌，第 2 次起扣 2 条（防穷举）
+    const penalty = wrongPenalty(attempts);
+    const tongueAfter = Math.max(0, state.tongue - penalty);
+    console.warn('[Engine] 对质失败（妄言）', puzzleId, '第', attempts, '次，扣', penalty, '条舌');
     set({
       wrongAttempts: { ...state.wrongAttempts, [puzzleId]: attempts },
       tongue: tongueAfter,
@@ -243,9 +266,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   spendHint: () => {
-    const { incense } = get();
-    if (incense < HINT_COST) return false;
-    set({ incense: incense - HINT_COST });
+    const { incense, hintCount } = get();
+    const cost = hintCostFor(hintCount);
+    if (incense < cost) return false;
+    set({ incense: incense - cost, hintCount: hintCount + 1 });
     persistSlice({ ...get() } as GameStore);
     return true;
   },
@@ -302,10 +326,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       levelId: null,
       nodeId: null,
       wrongAttempts: {},
+      hintCount: 0,
       levelFailed: false,
       lastVerdict: null
     });
   }
 }));
-
-export { HINT_COST };

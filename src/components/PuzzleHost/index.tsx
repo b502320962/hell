@@ -6,6 +6,8 @@ import type { Clue } from '../../engine/types';
 import styles from './index.module.scss';
 
 interface PuzzleHostProps {
+  /** 所在谜题节点 id（用于调试与追踪） */
+  puzzleId?: string;
   puzzle: PuzzleData;
   wrongCount: number;
   clues: Clue[];
@@ -40,6 +42,8 @@ const PuzzleHost: React.FC<PuzzleHostProps> = ({
   const [bridgeIndex, setBridgeIndex] = useState(0);
   // 审判定罪：已选证据
   const [chosen, setChosen] = useState<string[]>([]);
+  // 双谎指认：已点破的陈述
+  const [found, setFound] = useState<string[]>([]);
 
   const handleHint = () => {
     if (onHint()) setHintShown(true);
@@ -62,15 +66,26 @@ const PuzzleHost: React.FC<PuzzleHostProps> = ({
       setFeedback(null);
       setBridgeIndex(0);
       setChosen([]);
+      setFound([]);
     }
   };
 
-  // —— 矛盾指认 ——
+  // —— 矛盾指认（单谎 / 双谎） ——
   const handleContradiction = (statementId: string) => {
     if (feedback) return;
     if (puzzle.kind !== 'contradiction') return;
-    const success = statementId === puzzle.answerStatementId;
-    finishFeedback(success, success ? puzzle.successText : puzzle.failText);
+    const answers = puzzle.answerStatementIds ?? [puzzle.answerStatementId];
+    if (answers.includes(statementId)) {
+      if (found.includes(statementId)) return;
+      const next = [...found, statementId];
+      setFound(next);
+      // 双谎指认：全部点破才算通过
+      if (next.length >= answers.length) {
+        finishFeedback(true, puzzle.successText);
+      }
+    } else {
+      finishFeedback(false, puzzle.failText);
+    }
   };
 
   // —— 真话独木桥 ——
@@ -116,20 +131,33 @@ const PuzzleHost: React.FC<PuzzleHostProps> = ({
         <Text className={styles.promptText}>{puzzle.prompt}</Text>
       </View>
 
-      {/* 矛盾指认 */}
+      {/* 矛盾指认（单谎 / 双谎） */}
       {puzzle.kind === 'contradiction' ? (
         <View className={styles.statementList}>
-          {puzzle.statements.map((stmt) => (
-            <View
-              key={stmt.id}
-              className={styles.statementCard}
-              onClick={() => handleContradiction(stmt.id)}
-            >
-              <Text className={styles.speakerName}>{stmt.speaker}</Text>
-              <Text className={styles.statementText}>{stmt.text}</Text>
-              <Text className={styles.pickHint}>点此指认为谎话</Text>
-            </View>
-          ))}
+          {puzzle.answerStatementIds && puzzle.answerStatementIds.length > 1 ? (
+            <Text className={styles.multiProgress}>
+              已点破 {found.length} / {puzzle.answerStatementIds.length} 处谎
+            </Text>
+          ) : null}
+          {puzzle.statements.map((stmt) => {
+            const foundThis = found.includes(stmt.id);
+            return (
+              <View
+                key={stmt.id}
+                className={classnames(
+                  styles.statementCard,
+                  foundThis && styles.cardChosen
+                )}
+                onClick={() => handleContradiction(stmt.id)}
+              >
+                <Text className={styles.speakerName}>{stmt.speaker}</Text>
+                <Text className={styles.statementText}>{stmt.text}</Text>
+                <Text className={styles.pickHint}>
+                  {foundThis ? '√ 已点破' : '点此指认为谎话'}
+                </Text>
+              </View>
+            );
+          })}
         </View>
       ) : null}
 
